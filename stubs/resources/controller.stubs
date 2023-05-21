@@ -1,0 +1,48 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use App\Http\Controllers\Controller;
+use App\Traits\ResourceController;
+use App\Models\$CLASS_NAME$;
+
+class $CLASS_NAME$Controller extends Controller
+{
+    use ResourceController;
+
+    public function __construct($CLASS_NAME$ $model)
+    {
+        //set your configs
+        $this->model = $model;
+        $this->route = '';
+        $this->label = '';
+    }
+
+    protected function getColumns()
+    {
+        return[
+            ['name' => 'id', 'label' => 'ID'],
+            ['name' => 'created_at', 'label' => 'Created At']
+        ];
+    }
+
+    protected function getFields()
+    {
+        return [
+            //['type' => 'text', 'name' => 'name', 'label' => 'Nome'],
+        ];
+    }
+
+    protected function getValidation()
+    {
+        return [
+            'rules' => [
+                //'name' => 'required|string',
+            ],
+            'messages' => [
+                //'name.required' => 'O campo nome é obrigatório'
+            ]
+        ];
+    }
+
+}

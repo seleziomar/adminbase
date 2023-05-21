@@ -34,6 +34,9 @@
 </div>
 
 <div class="card">
+
+    @include('admin.components.flash_messages')
+
     <div class="card-header">
 
     </div>

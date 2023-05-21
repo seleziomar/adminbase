@@ -17,5 +17,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin', 
 
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('/usuarios', 'UserController');
+    Route::resource('/profiles', 'ProfileController');
+    Route::resource('/enderecos', 'AddressController');
 
 });

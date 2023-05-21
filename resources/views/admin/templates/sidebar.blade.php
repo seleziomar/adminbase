@@ -3,9 +3,14 @@
 <h6 class="navbar-heading">
     {{ $menu['heading'] }}
     <ul class="navbar-nav mb-md-4">
+        <li class="nav-item">
+            <a class="nav-link {!! Route::is('admin.home') ? 'active' : null !!}" href="{{ route('admin.home') }}">
+            <i class="fe fe-home"></i> Home
+            </a>
+        </li>
         @foreach ($menu['actions'] as $action)
             <li class="nav-item">
-                <a class="nav-link {!! Route::is($action['route'].'*') ? 'active' : null !!}" href="{{ route($action['route']) }}">
+                <a class="nav-link {!! Route::is($action['route'].'.*') ? 'active' : null !!}" href="{{ route($action['route'] . '.index') }}">
                 <i class="fe fe-{{ $action['icon'] }}"></i> {{ $action['label'] }}
                 </a>
             </li>
