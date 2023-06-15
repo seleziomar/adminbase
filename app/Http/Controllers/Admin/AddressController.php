@@ -31,32 +31,4 @@ class AddressController extends Controller
         ];
     }
 
-    protected function getFields()
-    {
-        $data = Profile::selectRaw('name as label, id as value')->get()->toArray();
-
-        return [
-            ['type' => 'select', 'name' => 'profile_id', 'label' => 'Perfil', 'data' => $data],
-            ['type' => 'text', 'name' => 'zip_code', 'label' => 'CEP', 'input_mask' => '99999-999', 'only_number' => true],
-            ['type' => 'text', 'name' => 'street', 'label' => 'Rua'],
-            ['type' => 'number', 'name' => 'number', 'label' => 'Número'],
-            ['type' => 'text', 'name' => 'neighborhood', 'label' => 'Bairro'],
-            ['type' => 'text', 'name' => 'city', 'label' => 'Cidade'],
-            ['type' => 'text', 'name' => 'state', 'label' => 'Estado'],
-            ['type' => 'text', 'name' => 'complement', 'label' => 'Complemento'],
-        ];
-    }
-
-    protected function getValidation()
-    {
-        return [
-            'rules' => [
-                //'name' => 'required|string',
-            ],
-            'messages' => [
-                //'name.required' => 'O campo nome é obrigatório'
-            ]
-        ];
-    }
-
 }

@@ -18,12 +18,6 @@ return [
                     'route' => 'admin.profiles',
                     'role' => 'admin'
                 ],
-                [
-                    'label' => 'Endereços',
-                    'icon' => 'pin',
-                    'route' => 'admin.enderecos',
-                    'role' => 'admin'
-                ]
             ]
         ],
 

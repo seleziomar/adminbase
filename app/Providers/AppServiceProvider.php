@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        view()->addNamespace('painel', app_path('App/Painel/resources/views'));
     }
 }

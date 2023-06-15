@@ -13,6 +13,7 @@ trait ResourceController{
     protected $route;
     protected $label;
     protected $rules = [];
+    protected $obj = null;
 
     public function index()
     {
@@ -24,12 +25,14 @@ trait ResourceController{
     public function create()
     {
         $layout = array_merge(
-            $this->getLayout(),
+            $this->getLayout([
+                'method' => 'create',
+            ]),
             [
-                'fields' => $this->getFields()
+                'fields' => $this->model->getFields()
             ]
         );
-        return view('admin.resource.create', $layout);
+        return view('resources.create', $layout);
     }
 
     public function store()
@@ -39,7 +42,7 @@ trait ResourceController{
         try{
             $this->model->create($data);
         }catch(\Exception $e){
-            return redirect()->back()->withErrors(['msg' => $e->getMessage()]);
+            return redirect()->back()->withInput()->withErrors(['msg' => $e->getMessage()]);
         }
 
         return redirect()->route($this->route . '.index')->with('success', 'Dados inseridos com sucesso!');
@@ -47,28 +50,32 @@ trait ResourceController{
 
     public function edit($id)
     {
-        $item = $this->model->find($id);
+        $item = $this->model->findOrFail($id);
 
         $fields = [];
 
-        foreach($this->getFields() as $key => $field){
+        foreach($this->model->getFields() as $key => $field){
 
             $fields[$key] = $field;
-            if(isset($item[$field['name']]) && $field['name'] != 'password'){
-                $fields[$key]['value'] = $item[$field['name']];
-            }
+
+            if($field['name'] === 'password') continue;
+
+            $value = data_get($item, $field['name'], null);
+            $fields[$key]['value'] = $value;
 
         }
 
         $layout = array_merge(
             $this->getLayout([
-                'item' => $item
+                'item' => $item,
+                'method' => 'edit'
             ]),
             [
                 'fields' => $fields
             ]
         );
-        return view('admin.resource.create', $layout);
+
+        return view('resources.create', $layout);
     }
 
     public function update($id)
@@ -98,7 +105,7 @@ trait ResourceController{
                 'list' => $this->model->get(),
                 'columns' => $this->getColumns(),
                 'route' => $this->route,
-                'label' => $this->label
+                'label' => $this->label,
             ],
             $extra
         );
@@ -106,8 +113,8 @@ trait ResourceController{
 
     protected function getData(){
 
-        $validation = $this->getValidation();
-        $columns = array_column($this->getFields(), 'name');
+        $validation = $this->model->getValidation();
+        $columns = array_column($this->model->getFields(), 'name');
         $rules = $validation['rules'];
 
         if(in_array('password', $columns)){
@@ -122,7 +129,7 @@ trait ResourceController{
         request()->validate($rules, $validation['messages']);
         $data = request()->only($columns);
 
-        foreach($this->getFields() as $col){
+        foreach($this->model->getFields() as $col){
             if($col['type'] === 'checkbox'){
                 $data[$col['name']] = request($col['name']) ? 1 : 0;
             }

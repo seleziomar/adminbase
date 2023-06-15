@@ -26,26 +26,4 @@ class UserController extends Controller
         ];
     }
 
-    protected function getFields()
-    {
-        return [
-            ['type' => 'text', 'name' => 'name', 'label' => 'Nome'],
-            ['type' => 'text', 'name' => 'email', 'label' => 'Email'],
-            ['type' => 'password', 'name' => 'password', 'label' => 'Senha'],
-        ];
-    }
-
-    protected function getValidation()
-    {
-        return [
-            'rules' => [
-                'name' => 'required|string',
-                'email' => 'required|email'
-            ],
-            'messages' => [
-                'name.required' => 'O campo nome é obrigatório'
-            ]
-        ];
-    }
-
 }

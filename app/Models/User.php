@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Painel\Input;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,6 +16,28 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    public function getFields()
+    {
+        return [
+            Input::name('name')->label('Nome')->text(),
+            Input::name('email')->label('Email')->text('email'),
+            Input::name('password')->label('Senha')->text('password'),
+        ];
+    }
+
+    public function getValidation()
+    {
+        return [
+            'rules' => [
+                'name' => 'required|string',
+                'email' => 'required|email'
+            ],
+            'messages' => [
+                'name.required' => 'O campo nome é obrigatório'
+            ]
+        ];
+    }
 
     /**
      * The attributes that are mass assignable.

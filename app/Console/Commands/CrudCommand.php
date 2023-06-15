@@ -6,15 +6,17 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Pluralizer;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Validator;
 
 class CrudCommand extends Command
 {
+    public $name;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'make:crud {name}';
+    protected $signature = 'make:crud';
 
     /**
      * The console command description.
@@ -45,6 +47,15 @@ class CrudCommand extends Command
      */
     public function handle()
     {
+
+        $name = $this->askValid(
+            'What is class name?',
+            'name',
+            ['required', 'string', 'min:3']
+        );
+
+        $this->name = $name;
+
         $path = $this->getSourceFilePath();
 
         $contents = $this->getSourceFile();
@@ -79,7 +90,7 @@ class CrudCommand extends Command
     {
         return [
             'NAMESPACE'         => 'App\\Http\\Controllers\\Admin',
-            'CLASS_NAME'        => $this->getSingularClassName($this->argument('name')),
+            'CLASS_NAME'        => $this->getSingularClassName($this->name),
         ];
     }
 
@@ -131,7 +142,34 @@ class CrudCommand extends Command
      */
     public function getSourceFilePath()
     {
-        return base_path('App/Http/Controllers/Admin') .'/' .$this->getSingularClassName($this->argument('name')) . 'Controller.php';
+        return base_path('App/Http/Controllers/Admin') .'/' .$this->getSingularClassName($this->$name) . 'Controller.php';
+    }
+
+    protected function askValid($question, $field, $rules)
+    {
+        $value = $this->ask($question);
+
+        if($message = $this->validateInput($rules, $field, $value)) {
+            $this->error($message);
+
+            return $this->askValid($question, $field, $rules);
+        }
+
+        return $value;
+    }
+
+
+    protected function validateInput($rules, $fieldName, $value)
+    {
+        $validator = Validator::make([
+        $fieldName => $value
+        ], [
+        $fieldName => $rules
+        ]);
+
+        return $validator->fails()
+            ? $validator->errors()->first($fieldName)
+            : null;
     }
 
 }
